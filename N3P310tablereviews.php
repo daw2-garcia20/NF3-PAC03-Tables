@@ -1,25 +1,17 @@
 <?php
-//connect to mysqli
 $db = mysqli_connect('localhost', 'root') or 
     die ('Unable to connect. Check your connection parameters.');
-
-// make sure you're using the right database
 mysqli_select_db($db,'reviews') or die(mysqli_error($db));
-
-//create the reviews table
 $query = 'CREATE TABLE reviews (
         review_comic_id INTEGER UNSIGNED NOT NULL, 
         review_date     DATE             NOT NULL, 
         reviewer_name   VARCHAR(255)     NOT NULL, 
         review_comment  VARCHAR(255)     NOT NULL, 
         review_rating   TINYINT UNSIGNED NOT NULL  DEFAULT 0, 
-
         KEY (review_comic_id)
     )
     ENGINE=MyISAM';
 mysqli_query($db, $query) or die (mysqli_error($db));
-
-//insert new data into the reviews table
 $query = <<<ENDSQL
 INSERT INTO reviews
     (review_comic_id, review_date, reviewer_name, review_comment,
@@ -33,6 +25,5 @@ VALUES
     (3, "2019-09-09", "Leonardo DaVinci", "Me gustó este comic, aunque se me hizo bastante pesado de terminar.", 3)
 ENDSQL;
 mysqli_query($db, $query) or die(mysqli_error($db));
-
 echo 'Comic database successfully updated!';
 ?>
