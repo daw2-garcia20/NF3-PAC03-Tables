@@ -14,7 +14,7 @@ $ordenar = $_GET['orden'];
 function generate_ratings($rating) {
     $comic_rating="";
     for ($i = 0; $i < $rating; $i++) {
-        $comic_rating .= '<img src="full_star.png" alt="star"/>';
+        $comic_rating .= '<img src="full_star.png" alt="star" width="10" height="10"/>';
     }
     return $comic_rating;
 }
@@ -202,9 +202,9 @@ while ($row = mysqli_fetch_assoc($result)) {
     $media += $suma;
     $resto = $cont%2;
     if($resto==0):
-        $color= "#DAF7A6";
+        $color= "green";
     else:
-        $color= "#FFC300";
+        $color= "red";
     endif;
     
     $table.= <<<ENDHTML
@@ -228,7 +228,7 @@ $porcentaje = 0;
 if($decimal>0){
     $porcentaje = $decimal*100;
     $porcentaje = intval(100-$porcentaje);
-    $rating .= '<img src="full_star.png" alt="estrella" style="clip-path:inset(0%' . $porcentaje . '% 0% 0%);"/>';
+    $rating .= '<img src="full_star.png" width="10"  height="10" alt="estrella" style="clip-path:inset(0%' . $porcentaje . '% 0% 0%);"/>';
 }
 
 $table .= <<<ENDHTML
