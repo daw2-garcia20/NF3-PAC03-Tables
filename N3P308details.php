@@ -9,8 +9,6 @@ mysqli_select_db($db , 'reviews') or die(mysqli_error($db));
 $comic_rating=0;
 $idcomic =  $_GET['idcomic2'];
 $ordenar = $_GET['orden'];
-
-// function to generate ratings
 function generate_ratings($rating) {
     $comic_rating="";
     for ($i = 0; $i < $rating; $i++) {
@@ -18,13 +16,8 @@ function generate_ratings($rating) {
     }
     return $comic_rating;
 }
-
-
-// take in the id of a director and return his/her full name
 function get_autor1($id_autor1) {
-
     global $db;
-
     $query = 'SELECT 
             cliente_fullname 
        FROM
@@ -35,15 +28,10 @@ function get_autor1($id_autor1) {
 
     $row = mysqli_fetch_assoc($result);
     extract($row);
-
     return $cliente_fullname;
 }
-
-// take in the id of a lead actor and return his/her full name
 function get_autor2($id_autor2) {
-
     global $db;
-
     $query = 'SELECT
             cliente_fullname
         FROM
@@ -54,16 +42,10 @@ function get_autor2($id_autor2) {
 
     $row = mysqli_fetch_assoc($result);
     extract($row);
-
     return $cliente_fullname;
 }
-
-// take in the id of a movie type and return the meaningful textual
-// description
 function get_tipocomic($tipocomic_id) {
-
     global $db;
-
     $query = 'SELECT 
             tipocomic_label
        FROM
@@ -71,18 +53,12 @@ function get_tipocomic($tipocomic_id) {
        WHERE
            tipocomic_id = ' . $tipocomic_id;
     $result = mysqli_query($db,$query) or die(mysqli_error($db));
-
     $row = mysqli_fetch_assoc($result);
     extract($row);
-
     return $tipocomic_label;
 }
-
-// function to calculate if a movie made a profit, loss or just broke even
 function calculate_differences($ventas, $coste) {
-
     $difference = $ventas - $coste;
-
     if ($difference < 0) {     
         $color = 'red';
         $difference = '$' . abs($difference) . ' million';
@@ -93,15 +69,8 @@ function calculate_differences($ventas, $coste) {
         $color = 'blue';
         $difference = 'broke even';
     }
-
     return '<span style="color:' . $color . ';">' . $difference . '</span>';
 }
-
-
-
-
-
-// retrieve information
 $query = 'SELECT
         nombre_comic, ano_comic, autor1_comic, autor2_comic, tipo_comic, paginas_comic, coste_comic, ventas_comic
     FROM
@@ -110,11 +79,8 @@ $query = 'SELECT
         id_comic = '. $idcomic;
        
 $result = mysqli_query($db, $query) or die(mysqli_error($db));
-
-
 $row = mysqli_fetch_assoc($result);
 extract($row);
-
 $nombrecomic          = $nombre_comic;
 $autor1comic          = get_autor1($autor1_comic);
 $autor2comic          = get_autor2($autor2_comic);
@@ -123,9 +89,6 @@ $paginascomic         = $paginas_comic . ' pags';
 $ventascomic          = $ventas_comic . ' million';
 $costecomic          = $coste_comic . ' million';
 $beneficioscomic      = calculate_differences($ventas_comic,$coste_comic);
-
-// display the information
-
 $table.= <<<ENDHTML
 <html>
  <head>
@@ -160,26 +123,14 @@ $table.= <<<ENDHTML
     </tr>
    </table>
 ENDHTML;
-
-
-
-// retrieve reviews for this movie
 $query = 'SELECT
         review_comic_id, review_date, reviewer_name, review_comment, review_rating
     FROM
         reviews
     WHERE
         review_comic_id =' . $idcomic . ' 
-        
     ORDER BY ' . $ordenar .' DESC';
-
-
 $result = mysqli_query($db, $query) or die(mysqli_error($db));
-
-
-
-
-// display the reviews
 $table.= <<<ENDHTML
    <h3><em>Reviews</em></h3>
    <table cellpadding='2' cellspacing='2'
@@ -191,7 +142,6 @@ $table.= <<<ENDHTML
      <th style="width: 5em;"><a href="N3P308details.php?idcomic2=$idcomic&orden=review_rating">Rating</th>
     </tr>
 ENDHTML;
-
 while ($row = mysqli_fetch_assoc($result)) {
     $date = $row['review_date'];
     $name = $row['reviewer_name'];
@@ -206,7 +156,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     else:
         $color= "red";
     endif;
-    
     $table.= <<<ENDHTML
     <tr style="background-color:$color">
       <td style="vertical-align:top; text-align: center">$date</td>
@@ -216,9 +165,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     </tr>
 ENDHTML;
 }
-
-
-
 $media = ($media)/$cont;
 $entero = intval($media);
 $decimal = $media - $entero;
@@ -230,19 +176,16 @@ if($decimal>0){
     $porcentaje = intval(100-$porcentaje);
     $rating .= '<img src="full_star.png" width="10"  height="10" alt="estrella" style="clip-path:inset(0%' . $porcentaje . '% 0% 0%);"/>';
 }
-
 $table .= <<<ENDHTML
 <tr style="border: 2px solid black;">
    <td colspan= "3" style="vertical-align:top; text-align: center;">Media</td>
    <td style="vertical-align:top; text-align: center;">$rating</td>
 </tr>
 ENDHTML;
-
 $table.=<<<ENDHTML
   </div>
  </body>
 </html>
 ENDHTML;
-
 echo $table;
 ?>
